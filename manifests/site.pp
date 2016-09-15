@@ -1,15 +1,18 @@
-include java
 
-java::oracle { 'jdk6' :
-	ensure  => 'present',
-	version => '6',
-	java_se => 'jdk',
-}
+#include java
 
-$packages = [ 'glibc.i686', 'unzip', 'vim-X11','vim-common','vim-enhanced','vim-minimal' ]
+# SAP ASE already comes with it's own 
+#java::oracle { 'jdk6' :
+#	ensure  => 'present',
+#	version => '6',
+#	java_se => 'jdk',
+#}
+
+$tools = ['unzip', 'vim-X11','vim-common','vim-enhanced','vim-minimal']
+$sybase_packages = [ 'glibc.x86-64' ]
 $directories = ['/opt/sybase','/var/sybase','/opt/sybase/install']
 
-package { $packages: ensure => 'installed' }
+#package { $sybase_packages: ensure => 'latest',}
 
 group { 'sybase':
 	ensure => 'present',
@@ -25,4 +28,13 @@ file { $directories:
 	ensure => 'directory',
 	owner => 'sybase',
     group => 'sybase',
+}
+
+class { 'sudo':
+  purge               => false,
+  config_file_replace => false,
+}
+
+sudo::conf { 'sybase':
+  content  => "sybase ALL=(ALL) NOPASSWD: ALL",
 }
