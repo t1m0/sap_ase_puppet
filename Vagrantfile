@@ -27,8 +27,8 @@ Vagrant.configure(2) do |config|
     #sudo /opt/puppetlabs/puppet/bin/puppet module install puppetlabs-java
     sudo /opt/puppetlabs/puppet/bin/puppet module install saz-sudo
     sudo chmod 777 /vagrant/ASE_Suite.linuxamd64.tgz
-    sudo /opt/puppetlabs/puppet/bin/puppet apply /etc/puppet/manifests/site.pp
-    sudo su - sybase -c "tar -xf /vagrant/ASE_Suite.linuxamd64.tgz -C /opt/sybase/install"
+    #sudo /opt/puppetlabs/puppet/bin/puppet apply /etc/puppet/manifests/site.pp
+    #sudo su - sybase -c "tar -xf /vagrant/ASE_Suite.linuxamd64.tgz -C /opt/sybase/install"
     #sudo su - sybase  -c "/opt/sybase/install/ASE_Suite/setup.bin -i silent -f /vagrant/sample_response.txt -DAGREE_TO_SAP_LICENSE=true"
   SHELL
 end

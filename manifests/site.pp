@@ -8,33 +8,54 @@
 #	java_se => 'jdk',
 #}
 
-$tools = ['unzip', 'vim-X11','vim-common','vim-enhanced','vim-minimal']
-$sybase_packages = [ 'glibc.x86-64' ]
+Package { ensure => 'latest' }
+# Default packages
+package { 'vim-X11': ensure => 'latest',name => 'vim-X11'}
+package { 'vim-enhanced': ensure => 'latest',name => 'vim-enhanced'}
+package { 'vim-minimal': ensure => 'latest',name => 'vim-minimal'}
+###
+# SAP ASE Installation
+###
 $directories = ['/opt/sybase','/var/sybase','/opt/sybase/install']
-
-#package { $sybase_packages: ensure => 'latest',}
+# Mandatory for SAP ASE
+package { 'glibc.x86_64': ensure => 'latest',name => 'glibc.x86_64'} 
+package { 'glibc.i686': ensure => 'latest',name => 'glibc.i686'} ->
 
 group { 'sybase':
 	ensure => 'present',
-}
+} ->
 
 user { 'sybase':
 	ensure => 'present',
     home => '/opt/sybase',
     groups => 'sybase',
-}
+} ->
 
 file { $directories:
 	ensure => 'directory',
 	owner => 'sybase',
     group => 'sybase',
-}
+} ->
 
 class { 'sudo':
   purge               => false,
   config_file_replace => false,
-}
+} ->
 
 sudo::conf { 'sybase':
   content  => "sybase ALL=(ALL) NOPASSWD: ALL",
+} ->
+
+exec { 'extract_tar':
+  user    => 'sybase',
+  command => '/bin/tar -xf /vagrant/ASE_Suite.linuxamd64.tgz -C /opt/sybase/install',
+  creates => '/opt/sybase/install/ASE_Suite'
+}# ->
+
+exec { 'install_sap_ase':
+  user    => 'sybase',
+  command => '/opt/sybase/install/ASE_Suite/setup.bin -i silent -f /vagrant/sample_response.txt -DAGREE_TO_SAP_LICENSE=true',
+  creates => '/opt/sybase/interfaces',
+  timeout => 2600,
+  logoutput => true,
 }
