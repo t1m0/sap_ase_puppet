@@ -50,7 +50,7 @@ exec { 'extract_tar':
   user    => 'sybase',
   command => '/bin/tar -xf /vagrant/ASE_Suite.linuxamd64.tgz -C /opt/sybase/install',
   creates => '/opt/sybase/install/ASE_Suite'
-}# ->
+} ->
 
 exec { 'install_sap_ase':
   user    => 'sybase',
@@ -58,4 +58,5 @@ exec { 'install_sap_ase':
   creates => '/opt/sybase/interfaces',
   timeout => 2600,
   logoutput => true,
+  returns => 1,
 }
